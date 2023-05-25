@@ -55,7 +55,7 @@ def get_data_daily_data_to_df(path, prefix):
 
 
 def get_qr_prices(start_date, end_date):
-    securities = get_securities(exchanges=["NASDAQ", "NYSE", "AMEX"], sec_types="STK", fields="*")
+    securities = get_securities(universes="usstock-active", fields="*")
 
     filtered_securities = securities[securities.Delisted==False]
     filtered_securities = filtered_securities[["Symbol", "Exchange", "Name", "Delisted", "alpaca_Status", "usstock_FirstPriceDate"]].dropna()
@@ -65,7 +65,7 @@ def get_qr_prices(start_date, end_date):
     metadata = pd.merge(metadata, filtered_securities.reset_index(), left_on="ticker", right_on="Symbol", how="left").dropna()
     metadata.set_index('Sid', inplace=True)
     # prices = get_prices("usstock-free-1d", universes="usstock-free", start_date="2017-01-01", fields=["Close"])
-    prices = get_prices("usstock-1d", universes="usstock-active", start_date=start_date, end_date=end_date, fields=["Close"])
+    prices = get_prices("sharadar-1d", universes="usstock-active", start_date=start_date, end_date=end_date, fields=["Close"])
 
     shared_metadata = filtered_securities.index.intersection(metadata.index)
     metadata = metadata.loc[shared_metadata, :]
@@ -79,4 +79,4 @@ def get_qr_prices(start_date, end_date):
     # prices.info()
     return metadata, prices
 
-# get_qr_prices(start_date="2000-01-01", end_date='2023-03-31')
+# get_qr_prices(start_date="2000-01-01", end_date='2020-03-31')
